@@ -33,12 +33,21 @@ export default class {
       .bills()
       .list()
       .then(snapshot => {
-        const bills = snapshot
-          .map(doc => {
+       
+        function order(a, b) {
+          return a < b ? -1 : (a > b ? 1 : 0);
+      }
+        /* snapshot.sort((a, b) => {
+          if (a.date !== null && b.date !== null) {
+            return b.date.split('-').join('') - a.date.split('-').join('');
+          }
+        }) */
+        const bills = snapshot.map(doc => {
             try {
               return {
                 ...doc,
-                date: formatDate(doc.date),
+                //date: formatDate(doc.date),
+                date: doc.date,
                 status: formatStatus(doc.status)
               }
             } catch(e) {
@@ -51,7 +60,12 @@ export default class {
                 status: formatStatus(doc.status)
               }
             }
+          }).sort((a, b) => {
+            if (a.date !== null && b.date !== null) {
+              return b.date.split('-').join('') - a.date.split('-').join('');
+            }
           })
+          
           console.log('length', bills.length)
         return bills
       })
