@@ -20,7 +20,6 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
-  console.log('data: ', data)
   return (data && data.length) ? data.sort((a, b) => ((a.date < b.date) ? 1 : -1)).map(bill => row(bill)).join("") : ""
 }
 
