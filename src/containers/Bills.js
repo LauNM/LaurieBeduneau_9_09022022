@@ -26,22 +26,13 @@ export default class {
     $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;' class="bill-proof-container"><img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`)
     $('#modaleFile').modal('show')
   }
-
+ /* istanbul ignore next */
   getBills = () => {
     if (this.store) {
       return this.store
       .bills()
       .list()
       .then(snapshot => {
-       
-        function order(a, b) {
-          return a < b ? -1 : (a > b ? 1 : 0);
-      }
-        /* snapshot.sort((a, b) => {
-          if (a.date !== null && b.date !== null) {
-            return b.date.split('-').join('') - a.date.split('-').join('');
-          }
-        }) */
         const bills = snapshot.map(doc => {
             try {
               return {
@@ -60,12 +51,7 @@ export default class {
                 status: formatStatus(doc.status)
               }
             }
-          }).sort((a, b) => {
-            if (a.date !== null && b.date !== null) {
-              return b.date.split('-').join('') - a.date.split('-').join('');
-            }
-          })
-          
+          })          
           console.log('length', bills.length)
         return bills
       })
