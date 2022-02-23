@@ -20,10 +20,9 @@ export default class NewBill {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
-    const destructuredFileName = fileName.split('.');
-    const fileType = destructuredFileName[destructuredFileName.length-1];
-   
-    if (fileType === 'jpg' || fileType === 'jpeg' || fileType === 'png') {
+    const error = this.document.querySelector(`span[id="file-error"]`)
+    if (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') {
+      error.textContent = ""
       const formData = new FormData()
       const email = JSON.parse(localStorage.getItem("user")).email
       formData.append('file', file)
@@ -44,6 +43,10 @@ export default class NewBill {
           this.fileName = fileName
         }).catch(error => console.error(error))
     }
+    else {
+      error.textContent = "Le fichier doit être une image  au format jpg | jpeg | png";
+      error.className = "error"
+     }
     
     
   }
