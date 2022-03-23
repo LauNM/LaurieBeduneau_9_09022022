@@ -163,6 +163,7 @@ describe('Given I am connected as an Admin', () => {
 describe('Given I am connected as Admin, and I am on Dashboard page, and I clicked on a pending bill', () => {
   describe('When I click on accept button', () => {
     test('I should be sent on Dashboard with big billed icon instead of form', () => {
+      // arrange
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Admin'
@@ -180,7 +181,11 @@ describe('Given I am connected as Admin, and I am on Dashboard page, and I click
       const acceptButton = screen.getByTestId("btn-accept-bill-d")
       const handleAcceptSubmit = jest.fn((e) => dashboard.handleAcceptSubmit(e, bills[0]))
       acceptButton.addEventListener("click", handleAcceptSubmit)
+
+      //act
       fireEvent.click(acceptButton)
+
+      //assert
       expect(handleAcceptSubmit).toHaveBeenCalled()
       const bigBilledIcon = screen.queryByTestId("big-billed-icon")
       expect(bigBilledIcon).toBeTruthy()
