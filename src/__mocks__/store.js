@@ -1,3 +1,5 @@
+import {screen} from "@testing-library/dom";
+
 const mockedBills = {
   list() {
     return Promise.resolve([{
@@ -83,11 +85,26 @@ const mockedBills = {
     })
   },
 }
+const mockedNewBill = [{
+  email: JSON.parse(localStorage.getItem("user")).email,
+  type: "Transports",
+  name:  "Train Paris-Marseille",
+  amount: "80",
+  date: "2022-01-15",
+  vat: "70",
+  pct: "20",
+  commentary: "Seconde classe",
+  fileUrl:  'https://test.com/test.png',
+  fileName: 'test.png',
+  status: 'pending'
+}]
 
 export default {
   bills() {
     return mockedBills
-    //return {}
   },
+  newBill() {
+    return mockedNewBill
+  }
 }
 

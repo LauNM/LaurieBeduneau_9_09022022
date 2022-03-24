@@ -4,16 +4,14 @@
 
 import {fireEvent, screen, waitFor} from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
-import Actions from "../views/Actions.js"
 import { bills } from "../fixtures/bills.js"
-import { ROUTES, ROUTES_PATH} from "../constants/routes.js";
+import { ROUTES_PATH } from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store"
 
 import router from "../app/Router.js";
-import Dashboard from "../containers/Dashboard.js";
 import Bills from "../containers/Bills.js";
-import DashboardUI from "../views/DashboardUI.js";
+
 jest.mock("../app/Store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
@@ -44,9 +42,9 @@ describe("Given I am connected as an employee", () => {
   })
 })
 
-describe('Given I am connected as Employee, and I am on Bills page, and I clicked on a bill eye button', () => {
+/*describe('Given I am connected as Employee, and I am on Bills page, and I clicked on a bill eye button', () => {
 
-  test('I should open a modal with bills picture', async () => {
+  test('Should open a modal with bills picture', async () => {
     $.fn.modal = jest.fn();
     Object.defineProperty(window, 'localStorage', { value: localStorageMock })
     window.localStorage.setItem('user', JSON.stringify({
@@ -67,4 +65,65 @@ describe('Given I am connected as Employee, and I am on Bills page, and I clicke
     expect(handleClick).toHaveBeenCalled()
 
   })
-})
+})*/
+
+describe("Given I am connected as Employee, and I am on Bills page, and I clicked on a bill eye button", () => {
+  test("handleClickIconEye method should have been called", async () => {
+    // arrange
+    Object.defineProperty(window, "localStorage", { value: localStorageMock });
+    window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+        })
+    );
+    const mock = jest.fn();
+    jest
+        .spyOn(Bills.prototype, "handleClickIconEye")
+        .mockImplementationOnce(mock);
+    document.body.innerHTML = "";
+    document.body.innerHTML = BillsUI({ data: bills });
+
+    const eyes = screen.getAllByTestId("icon-eye");
+    new Bills({
+      document,
+      onNavigate: jest.fn(),
+      store: null,
+      bills: bills,
+      localStorage: window.localStorage,
+    });
+    // act
+    fireEvent.click(eyes[0]);
+    // assert
+    expect(mock).toHaveBeenCalledTimes(1);
+    expect(mock).toHaveBeenCalledWith(eyes[0]);
+  });
+  test("a modal should show up", async () => {
+    // arrange
+    Object.defineProperty(window, "localStorage", { value: localStorageMock });
+    window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+        })
+    );
+    document.body.innerHTML = "";
+    document.body.innerHTML = BillsUI({ data: bills });
+    const eyes = screen.getAllByTestId("icon-eye");
+    expect(eyes.length).toBe(4);
+    $.fn.modal = jest.fn();
+    const billContainer = new Bills({
+      document,
+      onNavigate: jest.fn(),
+      store: null,
+      bills: bills,
+      localStorage: window.localStorage,
+    });
+    // act
+    billContainer.handleClickIconEye(eyes[0]);
+    // assert
+    expect($().modal).toHaveBeenCalledWith("show");
+
+  });
+
+});
