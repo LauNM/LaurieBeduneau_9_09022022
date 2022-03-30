@@ -1,5 +1,3 @@
-import {screen} from "@testing-library/dom";
-
 const mockedBills = {
   list() {
     return Promise.resolve([{
@@ -64,9 +62,12 @@ const mockedBills = {
       }])
 
   },
-  create(bill) {
-    return Promise.resolve({fileUrl: 'https://localhost:3456/images/test.jpg', key: '1234'})
-  },
+  create: jest.fn((bill) => {
+    return Promise.resolve({
+      fileUrl: "https://localhost:3456/images/test.jpg",
+      key: "1234",
+    });
+  }),
   update(bill) {
     return Promise.resolve({
       "id": "47qAXb6fIm2zOKkLzMro",
@@ -85,26 +86,11 @@ const mockedBills = {
     })
   },
 }
-const mockedNewBill = [{
-  email: JSON.parse(localStorage.getItem("user")).email,
-  type: "Transports",
-  name:  "Train Paris-Marseille",
-  amount: "80",
-  date: "2022-01-15",
-  vat: "70",
-  pct: "20",
-  commentary: "Seconde classe",
-  fileUrl:  'https://test.com/test.png',
-  fileName: 'test.png',
-  status: 'pending'
-}]
 
 export default {
   bills() {
     return mockedBills
   },
-  newBill() {
-    return mockedNewBill
-  }
 }
+
 
