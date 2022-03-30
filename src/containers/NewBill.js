@@ -7,20 +7,19 @@ export default class NewBill {
     this.onNavigate = onNavigate
     this.store = store
     const formNewBill = this.document.querySelector(`form[data-testid="form-new-bill"]`)
+    this.handleSubmit = this.handleSubmit.bind(this);
     formNewBill.addEventListener("submit", this.handleSubmit)
     const file = this.document.querySelector(`input[data-testid="file"]`)
-    console.log(file.value)
+    this.handleChangeFile = this.handleChangeFile.bind(this);
     file.addEventListener("change", this.handleChangeFile)
     this.fileUrl = null
     this.fileName = null
     this.billId = null
     new Logout({ document, localStorage, onNavigate })
   }
-  handleChangeFile = e => {
-    console.log('handleChangeFile')
+  handleChangeFile(e) {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-    console.log(file)
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const error = this.document.querySelector(`span[id="file-error"]`)
@@ -52,7 +51,7 @@ export default class NewBill {
 
 
   }
-  handleSubmit = e => {
+  handleSubmit(e) {
     e.preventDefault()
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
