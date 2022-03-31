@@ -5,7 +5,7 @@
 import {fireEvent, screen, waitFor} from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import {bills} from "../fixtures/bills.js"
-import {ROUTES_PATH} from "../constants/routes.js";
+import {ROUTES, ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store"
 
@@ -85,7 +85,6 @@ describe("Given I am connected as Employee, and I am on Bills page, and I clicke
         document.body.innerHTML = "";
         document.body.innerHTML = BillsUI({data: bills});
         const eyes = screen.getAllByTestId("icon-eye");
-        console.log(eyes[0])
         expect(eyes.length).toBe(4);
         $.fn.modal = jest.fn();
         const billContainer = new Bills({
@@ -121,7 +120,6 @@ describe("Given I am connected as Employee, and I am on Bills page, and I click 
         document.body.innerHTML = BillsUI({data: bills});
 
         const newBillBtn = screen.getByTestId("btn-new-bill");
-        console.log(newBillBtn)
         new Bills({
             document,
             onNavigate: jest.fn(),
@@ -135,16 +133,19 @@ describe("Given I am connected as Employee, and I am on Bills page, and I click 
         expect(mock).toHaveBeenCalledTimes(1);
         //expect(mock).toHaveBeenCalledWith(newBillBtn);
     });
-    test('onNavigate method should have been called', async () => {
-        /*const mock = jest.fn();
-        jest
-            .spyOn(Bills.prototype.handleClickNewBill, "this.onNavigate(ROUTES_PATH['NewBill'])")
-            .mockImplementationOnce(mock);*/
-
-        const newBillBtn = screen.getByTestId("btn-new-bill");
-        fireEvent.click(newBillBtn);
-
-        expect(Bills.handleClickNewBill).toHaveBeenCalledTimes(1)
-        //onNavigate(ROUTES_PATH.NewBill);
+    test('It should renders NewBill page', async () => {
+        const onNavigate = (pathname) => {
+            document.body.innerHTML = ROUTES({ pathname });
+        };
+        const bill = new Bills({
+            document,
+            onNavigate,
+            store: null,
+            bills: bills,
+            localStorage: window.localStorage,
+        });
+        const handleClick = jest.fn(bill.handleClickNewBill);
+        handleClick()
+        expect(screen.getByText(/Envoyer une note de frais/i)).toBeTruthy()
     })
 })
