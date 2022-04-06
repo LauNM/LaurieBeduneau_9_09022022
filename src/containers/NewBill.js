@@ -7,6 +7,7 @@ export default class NewBill {
     this.onNavigate = onNavigate
     this.store = store
     const formNewBill = this.document.querySelector(`form[data-testid="form-new-bill"]`)
+    this.updateBill = this.updateBill.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     formNewBill.addEventListener("submit", this.handleSubmit)
     const file = this.document.querySelector(`input[data-testid="file"]`)
@@ -72,7 +73,7 @@ export default class NewBill {
   }
 
   // not need to cover this function by tests
-  updateBill = (bill) => {
+  updateBill(bill) {
     if (this.store) {
       this.store
       .bills()
