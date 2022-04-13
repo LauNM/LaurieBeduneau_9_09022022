@@ -169,13 +169,16 @@ describe("Given I am a user connected as Employee", () => {
 
             const contentPending  = screen.getAllByText("En attente")
             expect(contentPending).toBeTruthy()
+            expect(contentPending.length).toBe(1)
             const contentRefused  = screen.getAllByText("Refused")
             expect(contentRefused).toBeTruthy()
+            expect(contentRefused.length).toBe(2)
 
             const contentAccepted  = screen.getAllByText("Accepté")
             expect(contentAccepted).toBeTruthy()
+            expect(contentAccepted.length).toBe(1)
         })
-        /*describe("When an error occurs on API", () => {
+        describe("When an error occurs on API", () => {
             beforeEach(() => {
                 jest.spyOn(mockStore, "bills")
                 Object.defineProperty(
@@ -184,7 +187,7 @@ describe("Given I am a user connected as Employee", () => {
                     { value: localStorageMock }
                 )
                 window.localStorage.setItem('user', JSON.stringify({
-                    type: 'Admin',
+                    type: 'Employee',
                     email: "a@a"
                 }))
                 const root = document.createElement("div")
@@ -200,7 +203,7 @@ describe("Given I am a user connected as Employee", () => {
                             return Promise.reject(new Error("Erreur 404"))
                         }
                     }})
-                window.onNavigate(ROUTES_PATH.Dashboard)
+                window.onNavigate(ROUTES_PATH.Bills)
                 await new Promise(process.nextTick);
                 const message = await screen.getByText(/Erreur 404/)
                 expect(message).toBeTruthy()
@@ -215,12 +218,11 @@ describe("Given I am a user connected as Employee", () => {
                         }
                     }})
 
-                window.onNavigate(ROUTES_PATH.Dashboard)
+                window.onNavigate(ROUTES_PATH.Bills)
                 await new Promise(process.nextTick);
                 const message = await screen.getByText(/Erreur 500/)
                 expect(message).toBeTruthy()
             })
-        })*/
-
+        })
     })
 })

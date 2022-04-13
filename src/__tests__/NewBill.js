@@ -103,7 +103,7 @@ describe("Given I am connected as an employee", () => {
             })
         })
         describe("When an error occurs", () => {
-            test("create new bill and catch error", async () => {
+            test("create new bill and catch a 404 error", async () => {
                 document.body.innerHTML = "";
                 Object.defineProperty(window, "localStorage", {
                     value: localStorageMock,
@@ -116,10 +116,11 @@ describe("Given I am connected as an employee", () => {
                     },
                 });
                 jest.spyOn(mockStore, "bills")
+                const error404 = new Error('ERREUR 404')
                 mockStore.bills.mockImplementationOnce(() => {
                     return {
                         create: () => {
-                            return Promise.reject(new Error('error'))
+                            return Promise.reject(error404)
                         }
                     }
                 })
@@ -157,7 +158,65 @@ describe("Given I am connected as an employee", () => {
 
                 // assert
                 expect(console.error).toHaveBeenCalledTimes(1)
-                expect(console.error).toEqual(mockConsoleErr)
+                expect(console.error).toHaveBeenCalledWith(error404)
+
+            });
+            test("create new bill and catch a 500 error", async () => {
+                document.body.innerHTML = "";
+                Object.defineProperty(window, "localStorage", {
+                    value: localStorageMock,
+                });
+
+                const mockConsoleErr = jest.fn();
+                Object.defineProperty(window, "console", {
+                    value: {
+                        error: mockConsoleErr
+                    },
+                });
+                jest.spyOn(mockStore, "bills")
+                const error500 = new Error('ERREUR 500')
+                mockStore.bills.mockImplementationOnce(() => {
+                    return {
+                        create: () => {
+                            return Promise.reject(error500)
+                        }
+                    }
+                })
+
+
+                window.localStorage.setItem(
+                    "user",
+                    JSON.stringify({
+                        type: "Employee",
+                        email: "test@test.com",
+                    })
+                );
+
+                const root = document.createElement("div");
+                root.setAttribute("id", "root");
+                document.body.append(root);
+                router();
+                window.onNavigate(ROUTES_PATH.NewBill);
+
+                await waitFor(() => screen.getByText(/Envoyer une note de frais/));
+                const fileInput = screen.getByTestId("file");
+                expect(fileInput).toBeTruthy();
+
+                // act
+
+                const mockFile = new File(["test.png"], "test.png", {
+                    type: "image/png",
+                });
+                fireEvent.change(fileInput, {
+                    target: {
+                        files: [mockFile],
+                    },
+                });
+                await new Promise(process.nextTick);
+
+                // assert
+                expect(console.error).toHaveBeenCalledTimes(1)
+                expect(console.error).toHaveBeenCalledWith(error500)
 
             });
         })
